@@ -2,7 +2,7 @@
 
 
 #import data
-phenology_data <- read.csv("~/DeMarche_rotation/Phenology_data_2021.csv")
+phenology_data <- read.csv("~/Github/demarche-rotation-code/Phenology_data_2021.csv")
 
 phenology_data <- subset(phenology_data, select = -c(X.1,X.2,X.3,X.4))
 

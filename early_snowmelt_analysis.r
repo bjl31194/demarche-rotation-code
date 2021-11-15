@@ -46,14 +46,36 @@ peak_dates_early <- as.data.frame(lapply(peak_dates_early, unlist))
 #plot as frequency plot
 ggplot(peak_dates_control, aes(x = Peak_dates)) +
   geom_bar(stat="count", fill = "firebrick") +
-  labs(x = "Control dates", y = "Frequency") +
+  labs(title = "Peak Flowering Dates in \n Simulated Control Plots", x = "Date of peak flower (control)", y = "Frequency") +
   theme_classic() +
   theme(text = element_text(size = 15),
-        axis.text = element_text(size = 8), aspect.ratio = 0.8)
+        axis.text.x = element_text(size = 8, angle = 45, vjust = 1, hjust = 1), aspect.ratio = 0.8)
 
         ggplot(peak_dates_early, aes(x = Peak_dates)) +
-          geom_bar(stat="count", fill = "firebrick") +
-          labs(x = "Early dates", y = "Frequency") +
+          geom_bar(stat="count", fill = "cyan4") +
+          labs(title = "Peak Flowering Dates in \n Simulated Early Snowmelt Plots", x = "Date of peak flower (early)", y = "Frequency") +
           theme_classic() +
           theme(text = element_text(size = 15),
-                axis.text = element_text(size = 8), aspect.ratio = 0.8)
+                axis.text.x = element_text(size = 8, angle = 45, vjust = 1, hjust = 1), aspect.ratio = 0.8)
+
+#plot as density graph
+peak_dates_control$Treatment <- "C"
+
+peak_dates_early$Treatment <- "E"
+
+total_peak_dates <- bind_rows(peak_dates_control,peak_dates_early)
+
+total_peak_dates <- replace_na(total_peak_dates, list(Treatment="E"))
+
+total_peak_dates$Peak_dates = sub('X', '', total_peak_dates$Peak_dates)
+
+total_peak_dates$Peak_dates <- as.Date(total_peak_dates$Peak_dates, format='%m.%d.%y')
+
+
+ggplot(total_peak_dates, aes(x = Peak_dates, fill = Treatment)) +
+  #geom_histogram(position = "identity", alpha = 0.5) +
+  geom_density(aes(y=..count..), adjust=4, alpha = 0.5) +
+  labs(title = "Peak Flowering Distributions in \n Simulated Early Snowmelt Plots vs. Control", x = "Peak Flowering Dates", y = "Frequency") +
+  theme(
+    plot.title = element_text(hjust = 0.4)
+  )

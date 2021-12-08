@@ -4,10 +4,8 @@ library(tidyverse)
 #import data
 phenology_data <- read.csv("~/Github/demarche-rotation-code/Phenology_data_2021.csv")
 
-phenology_data <- subset(phenology_data, select = -c(X.1,X.2,X.3,X.4))
-
 #dataframe with only flowering data, site, and plot info
-flowering_data <- subset(phenology_data, select = -c(X,Y,TP,Comments,Sex,Pollination))
+flowering_data <- phenology_data
 
 
 
@@ -15,11 +13,20 @@ flowering_data <- subset(phenology_data, select = -c(X,Y,TP,Comments,Sex,Pollina
 flowering_data[flowering_data == "B"] <- 0
 
 #get rid of commas and sum values
-for(i in 3:ncol(flowering_data)) {
+for(i in 9:ncol(flowering_data)) {
   if(is.character(flowering_data[ , i])) {
     flowering_data[ , i] <- sapply(strsplit(flowering_data[ , i],","), function(x) sum(as.integer(x)))
   }
 }
+
+Dates <- c(colnames(flowering_data[9:ncol(flowering_data)]))
+Sites <- c('T1','T2','T3','T4','T5')
+for(k in Dates) {
+  for(j in Sites) {
+    Flowers <- c(with(flowering_data, sum(flowering_data[Site == j, k])))
+}
+}
+
 
 #get max flower numbers for each individual
 flowering_data$Max <- apply(flowering_data[3:18], MARGIN =  1, FUN = max, na.rm = T)
@@ -64,4 +71,4 @@ ggplot(total_peak_dates, aes(x = Peak_dates, fill = Treatment)) +
   theme(
     plot.title = element_text(hjust = 0.4), axis.text.x = element_text(angle = -80)
   ) +
-      facet_wrap(vars(Site))
+  facet_wrap(vars(Site))
